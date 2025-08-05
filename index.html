@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Flipper - Created by Mr. Ali</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.5s ease-in-out;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+            margin: 20px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+
+        .creator {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .color-display {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .color-display:hover {
+            transform: scale(1.02);
+            box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .current-color {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .color-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4ecdc4, #6ee5dc);
+            color: white;
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(45deg, #45b7d1, #67c7e8);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-modes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .mode-btn:hover,
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .color-value {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .color-value {
+                font-size: 1.3rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Animation for color change */
+        .color-change {
+            animation: colorPulse 0.6s ease-in-out;
+        }
+
+        @keyframes colorPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Color Flipper</h1>
+            <p class="subtitle">Professional Color Generator</p>
+            <p class="creator">Created by Mr. Ali</p>
+        </div>
+
+        <div class="color-display" id="colorDisplay">
+            <p class="current-color">Current Color:</p>
+            <p class="color-value" id="colorValue">#667eea</p>
+        </div>
+
+        <div class="controls">
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="flipColor()">
+                    🎨 Flip Color
+                </button>
+                <button class="btn btn-secondary" onclick="copyColor()">
+                    📋 Copy Code
+                </button>
+                <button class="btn btn-tertiary" onclick="saveColor()">
+                    💾 Save Color
+                </button>
+            </div>
+
+            <div class="color-modes">
+                <button class="mode-btn active" onclick="setMode('hex')" id="hexMode">HEX</button>
+                <button class="mode-btn" onclick="setMode('rgb')" id="rgbMode">RGB</button>
+                <button class="mode-btn" onclick="setMode('hsl')" id="hslMode">HSL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 Mr. Ali - Professional Web Developer</p>
+    </div>
+
+    <script>
+        let currentMode = 'hex';
+        let savedColors = JSON.parse(localStorage.getItem('savedColors')) || [];
+
+        // Color generation functions
+        function generateHexColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function generateRgbColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function generateHslColor() {
+            const h = Math.floor(Math.random() * 361);
+            const s = Math.floor(Math.random() * 101);
+            const l = Math.floor(Math.random() * 101);
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        }
+
+        // Convert colors between formats
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        // Main flip color function
+        function flipColor() {
+            let newColor;
+            
+            switch(currentMode) {
+                case 'hex':
+                    newColor = generateHexColor();
+                    break;
+                case 'rgb':
+                    newColor = generateRgbColor();
+                    break;
+                case 'hsl':
+                    newColor = generateHslColor();
+                    break;
+                default:
+                    newColor = generateHexColor();
+            }
+
+            // Update display
+            document.getElementById('colorValue').textContent = newColor;
+            document.body.style.background = newColor;
+            
+            // Add animation
+            const colorDisplay = document.getElementById('colorDisplay');
+            colorDisplay.classList.add('color-change');
+            setTimeout(() => {
+                colorDisplay.classList.remove('color-change');
+            }, 600);
+
+            // Update gradient background for better visual effect
+            if (currentMode === 'hex') {
+                const rgb = hexToRgb(newColor);
+                if (rgb) {
+                    document.body.style.background = `linear-gradient(135deg, ${newColor} 0%, rgb(${rgb.r - 50}, ${rgb.g - 50}, ${rgb.b - 50}) 100%)`;
+                }
+            }
+        }
+
+        // Copy color to clipboard
+        function copyColor() {
+            const colorValue = document.getElementById('colorValue').textContent;
+            navigator.clipboard.writeText(colorValue).then(() => {
+                // Show feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = 'linear-gradient(45deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #4ecdc4, #6ee5dc)';
+                }, 2000);
+            }).catch(() => {
+                alert('Failed to copy color code!');
+            });
+        }
+
+        // Save color to local storage
+        function saveColor() {
+            const colorValue = document.getElementById('colorValue').textContent;
+            
+            if (!savedColors.includes(colorValue)) {
+                savedColors.push(colorValue);
+                localStorage.setItem('savedColors', JSON.stringify(savedColors));
+                
+                // Show feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '💾 Saved!';
+                btn.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #45b7d1, #67c7e8)';
+                }, 2000);
+            } else {
+                alert('Color already saved!');
+            }
+        }
+
+        // Set color mode
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update active button
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(mode + 'Mode').classList.add('active');
+            
+            // Generate new color in selected format
+            flipColor();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                flipColor();
+            } else if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                copyColor();
+            } else if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveColor();
+            }
+        });
+
+        // Initialize with first color
+        window.addEventListener('load', () => {
+            flipColor();
+        });
+
+        // Add some interactive particles (optional enhancement)
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = 'rgba(255, 255, 255, 0.6)';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            particle.style.animation = 'float 4s linear forwards';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 4000);
+        }
+
+        // Add floating particles animation
+        const floatKeyframes = `
+            @keyframes float {
+                to {
+                    transform: translateY(-${window.innerHeight + 50}px) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = floatKeyframes;
+        document.head.appendChild(style);
+
+        // Create particles periodically
+        setInterval(createParticle, 2000);
+    </script>
+</body>
+</html>
